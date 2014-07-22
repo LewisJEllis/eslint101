@@ -52,11 +52,12 @@ Recall: "undesirable (whatever that means to you)".
 Neither did some other people. One guy called JSLint:
 > a tool that makes sure you write your code like Douglas Crockford
 
-right after he forked JSLint, made the magic even more powerful, and called it **JSHint**.
+after he forked JSLint, added magic, and called it **JSHint**.
 
 * Like JSLint but lets you configure the rules more
-* Has 80% more GitHub stars than JSLint
+* Adoption: 80% more GitHub stars
 * That guy, Anton Kovalyov, wrote a book, **Third-Party JavaScript**, with Shape's own Ben Vinegar
+* Now maintained by Rick Waldron, idiomatic.js author
 
 --
 
@@ -179,12 +180,12 @@ and then on `two.js` and `three.js`, of course.
 
 ### So what's so hard about these rules?
 
-Well, as you saw, sometimes simple things aren't quite so simple. Enforcing some rules is harder than enforcing others. Let's look at:
-* `camelcase`
+Well, as you saw, sometimes simple things aren't quite so simple. There can be multiple ways to enforce a particular rule, and enforcing some is harder than enforcing others. Let's look at these rule files:
 * `yoda`
+* `camelcase`
 * `block-scoped-var`
 
-The ones we looked at before were all easy cases. These, not so much. Some of these ESLint rules are doing quite a bit of magic of their own.
+The ones we looked at before were all easy cases, but some ESLint rules have quite a bit of their own magic.
 
 --
 
@@ -221,7 +222,7 @@ He did make **PhantomJS**, though.
 - Most, but not all, makers of magic tools write books
 - You should use their magic to make your code better
 - You, too, can harness this magic, thanks to ESLint
-- ESLint can be run as a task by Grunt, Gulp, etc, or as a pre-commit hook to enforce codebase consistency
+- ESLint can be integrated with your code editor, run as a task by Grunt, Gulp, etc, or even set as a pre-commit hook to enforce codebase consistency
 
 --
 

@@ -475,11 +475,12 @@ em {
 <blockquote>
 <p>a tool that makes sure you write your code like Douglas Crockford</p>
 </blockquote>
-<p>right after he forked JSLint, made the magic even more powerful, and called it <strong>JSHint</strong>.</p>
+<p>after he forked JSLint, added magic, and called it <strong>JSHint</strong>.</p>
 <ul>
 <li>Like JSLint but lets you configure the rules more</li>
-<li>Has 80% more GitHub stars than JSLint</li>
+<li>Adoption: 80% more GitHub stars</li>
 <li>That guy, Anton Kovalyov, wrote a book, <strong>Third-Party JavaScript</strong>, with Shape&#39;s own Ben Vinegar</li>
+<li>Now maintained by Rick Waldron, idiomatic.js author</li>
 </ul>
 </section>
   </div>
@@ -576,13 +577,13 @@ var justPreviousThree = context.getSource(node, 3);</code></pre>
   </div>
   <div class="slide hidden" id="slide-16">
     <section class="slide-content"><h3 id="so-what-s-so-hard-about-these-rules-">So what&#39;s so hard about these rules?</h3>
-<p>Well, as you saw, sometimes simple things aren&#39;t quite so simple. Enforcing some rules is harder than enforcing others. Let&#39;s look at:</p>
+<p>Well, as you saw, sometimes simple things aren&#39;t quite so simple. There can be multiple ways to enforce a particular rule, and enforcing some is harder than enforcing others. Let&#39;s look at these rule files:</p>
 <ul>
-<li><code>camelcase</code></li>
 <li><code>yoda</code></li>
+<li><code>camelcase</code></li>
 <li><code>block-scoped-var</code></li>
 </ul>
-<p>The ones we looked at before were all easy cases. These, not so much. Some of these ESLint rules are doing quite a bit of magic of their own.</p>
+<p>The ones we looked at before were all easy cases, but some ESLint rules have quite a bit of their own magic.</p>
 </section>
   </div>
   <div class="slide hidden" id="slide-17">
@@ -611,7 +612,7 @@ var justPreviousThree = context.getSource(node, 3);</code></pre>
 <li>Most, but not all, makers of magic tools write books</li>
 <li>You should use their magic to make your code better</li>
 <li>You, too, can harness this magic, thanks to ESLint</li>
-<li>ESLint can be run as a task by Grunt, Gulp, etc, or as a pre-commit hook to enforce codebase consistency</li>
+<li>ESLint can be integrated with your code editor, run as a task by Grunt, Gulp, etc, or even set as a pre-commit hook to enforce codebase consistency</li>
 </ul>
 </section>
   </div>

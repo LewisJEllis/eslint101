@@ -11,7 +11,7 @@
 
 module.exports = function(context) {
     function checkOpeningBrace(node) {
-        var source = context.getSource(node.test, 0, 3);
+        var source = context.getSource(node.test, 0, 4);
         if (!source.match(/ {\n/)) {
             context.report(node, "Found improperly formatted opening brace");
         }
