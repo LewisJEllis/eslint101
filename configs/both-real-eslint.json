@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "real-my-curly-brace-rule": 2,
+    "real-four": 2
+  },
+  "env": {
+    "node": true
+  }
+}

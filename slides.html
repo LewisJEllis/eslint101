@@ -1,0 +1,808 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>ESLint 101</title>
+  <style type="text/css">
+    body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #f7f7f7;
+  font-size: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+}
+
+.slide-content {
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  margin: 80px auto 0 auto;
+  padding: 30px;
+
+  font-weight: 200;
+  font-size: 200%;
+  line-height: 1.375;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.arrow {
+  width: 0; height: 0;
+  border: 30px solid #333;
+  float: left;
+  margin-right: 30px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prev {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+
+  border-left-width: 0;
+  border-right-width: 50px;
+}
+
+.next {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+
+  border-left-width: 50px;
+  border-right-width: 0;
+}
+
+.prev:hover {
+  border-right-color: #888;
+  cursor: pointer;
+}
+
+.next:hover {
+  border-left-color: #888;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 300%;
+  line-height: 1.2;
+  text-align: center;
+  margin: 170px 0 0;
+}
+
+h2 {
+  font-size: 100%;
+  line-height: 1.2;
+  margin: 5px 0;
+  text-align: center;
+  font-weight: 200;
+}
+
+h3 {
+  font-size: 140%;
+  line-height: 1.2;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+ul {
+  padding: 20px 0 0 60px;
+  font-weight: 200;
+  line-height: 1.375;
+}
+
+.author h1 {
+  font-size: 170%;
+  font-weight: 200;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.author h3 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 95%;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: #44a4dd;
+}
+
+a:hover {
+  color: #66b5ff;
+}
+
+pre {
+  font-size: 60%;
+  line-height: 1.3;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 3px;
+  background-color: #b4b4b4;
+
+  -webkit-transition: width 0.05s ease-out;
+  -moz-transition: width 0.05s ease-out;
+  -o-transition: width 0.05s ease-out;
+  transition: width 0.05s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+
+  body {
+    font-size: 70%;
+  }
+
+  .slide-content {
+    width: auto;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  h1 {
+    margin-top: 120px;
+  }
+
+  .prev, .prev:hover {
+    border-right-color: rgba(135, 135, 135, 0.5);
+  }
+
+  .next, .next:hover {
+    border-left-color: rgba(135, 135, 135, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 50%;
+    overflow: hidden;
+  }
+
+  .slide-content {
+    padding: 10px;
+    margin-top: 10px;
+    height: 340px;
+  }
+
+  h1 {
+    margin-top: 50px;
+  }
+
+  ul {
+    padding-left: 25px;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: letter;
+  }
+
+  .hidden {
+    display: inline;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  body {
+    margin: 0 auto !important;
+    border: 0;
+    padding: 0;
+    float: none !important;
+    overflow: visible;
+    background: none !important;
+    font-size: 52%;
+  }
+
+  .progress, .controls {
+    display: none;
+  }
+
+  .slide {
+    position: static;
+  }
+
+  .slide-content {
+    border: 1px solid #222;
+    margin-top: 0;
+    margin-bottom: 40px;
+    height: 3.5in;
+    overflow: visible;
+  }
+
+  .slide:nth-child(even) {
+    /* 2 slides per page */
+    page-break-before: always;
+  }
+}
+
+/*
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+*/
+
+code, pre {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  overflow: auto;
+  padding: 6px 10px;
+}
+
+code {
+  padding: 0 5px;
+}
+
+pre>code {
+  margin: 0; padding: 0;
+  border: none;
+  background: transparent;
+}
+
+pre .comment,
+pre .template_comment,
+pre .diff .header,
+pre .javadoc {
+  color: #998;
+  font-style: italic
+}
+
+pre .keyword,
+pre .css .rule .keyword,
+pre .winutils,
+pre .javascript .title,
+pre .nginx .title,
+pre .subst,
+pre .request,
+pre .status {
+  color: #333;
+  font-weight: bold
+}
+
+pre .number,
+pre .hexcolor,
+pre .ruby .constant {
+  color: #099;
+}
+
+pre .string,
+pre .tag .value,
+pre .phpdoc,
+pre .tex .formula {
+  color: #d14
+}
+
+pre .title,
+pre .id {
+  color: #900;
+  font-weight: bold
+}
+
+pre .javascript .title,
+pre .lisp .title,
+pre .clojure .title,
+pre .subst {
+  font-weight: normal
+}
+
+pre .class .title,
+pre .haskell .type,
+pre .vhdl .literal,
+pre .tex .command {
+  color: #458;
+  font-weight: bold
+}
+
+pre .tag,
+pre .tag .title,
+pre .rules .property,
+pre .django .tag .keyword {
+  color: #000080;
+  font-weight: normal
+}
+
+pre .attribute,
+pre .variable,
+pre .lisp .body {
+  color: #008080
+}
+
+pre .regexp {
+  color: #009926
+}
+
+pre .class {
+  color: #458;
+  font-weight: bold
+}
+
+pre .symbol,
+pre .ruby .symbol .string,
+pre .lisp .keyword,
+pre .tex .special,
+pre .prompt {
+  color: #990073
+}
+
+pre .built_in,
+pre .lisp .title,
+pre .clojure .built_in {
+  color: #0086b3
+}
+
+pre .preprocessor,
+pre .pi,
+pre .doctype,
+pre .shebang,
+pre .cdata {
+  color: #999;
+  font-weight: bold
+}
+
+pre .deletion {
+  background: #fdd
+}
+
+pre .addition {
+  background: #dfd
+}
+
+pre .diff .change {
+  background: #0086b3
+}
+
+pre .chunk {
+  color: #aaa
+}
+
+body {
+  background-color: #222;
+  color: #eee;
+}
+
+h1, h3 {
+  font-family: Impact;
+  font-weight: bold;
+  font-style: italic;
+}
+
+pre code {
+  color: #ccc;
+  font-size: 140%;
+}
+
+.keyword {
+  color: #0086b3 !important;
+  font-weight: inherit !important;
+}
+
+.tag {
+  color: #900 !important;
+}
+
+code {
+  background-color: inherit;
+}
+
+em {
+  border-bottom: 1px solid #666;
+}
+
+  </style>
+</head>
+<body>
+    <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="slide" id="slide-1">
+    <section class="slide-content"><h1 id="eslint-101">ESLint 101</h1>
+<h2 id="linting-your-code-and-getting-the-most-out-of-eslint">Linting your code, and getting the most out of ESLint</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-2">
+    <section class="slide-content"><h3 id="what-is-linting-">What is linting?</h3>
+<p><strong>Code Linting</strong> refers to using the magic powers of static analysis to find potentially erroneous, inconsistent, or otherwise undesirable (whatever that means to you) bits of code in a program. Linting is useful because it can:</p>
+<ul>
+<li>Catch bugs</li>
+<li>Help you avoid potential mistakes</li>
+<li>Keep your code clean, especially post-refactor</li>
+<li>Enforce style guidelines</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-3">
+    <section class="slide-content"><h3 id="why-do-we-want-it-">Why do we want it?</h3>
+<p>From idiomatic.js, a popular style guide:</p>
+<blockquote>
+<p>All code in any code-base should look like a single person typed it, no matter how many people contributed.</p>
+</blockquote>
+<p>Imagine how close to this goal a project can get if every developer just uses a linter configured in the same way.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-4">
+    <section class="slide-content"><h3 id="how-do-we-do-it-">How do we do it?</h3>
+<p>The magic powers of static analysis are harnessed by magic tools which do linting for you. This magic has become more powerful over time. A brief history:</p>
+<p>First, there was <strong>JSLint</strong>, which:</p>
+<ul>
+<li>Was made by Douglas Crockford, author of the (short) book, <strong>JavaScript: The Good Parts</strong></li>
+<li>Enforces Crockford&#39;s personal style preferences</li>
+<li>Has relatively limited configuration options</li>
+</ul>
+<p>Recall: &quot;undesirable (whatever that means to you)&quot;.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-5">
+    <section class="slide-content"><h3 id="but-i-don-t-like-some-of-crockford-s-rules-">But I don&#39;t like some of Crockford&#39;s rules!</h3>
+<p>Neither did some other people. One guy called JSLint:</p>
+<blockquote>
+<p>a tool that makes sure you write your code like Douglas Crockford</p>
+</blockquote>
+<p>right after he forked JSLint, made the magic even more powerful, and called it <strong>JSHint</strong>.</p>
+<ul>
+<li>Like JSLint but lets you configure the rules more</li>
+<li>Has 80% more GitHub stars than JSLint</li>
+<li>That guy, Anton Kovalyov, wrote a book, <strong>Third-Party JavaScript</strong>, with Shape&#39;s own Ben Vinegar</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-6">
+    <section class="slide-content"><h3 id="but-what-if-i-want-my-own-new-rules-">But what if I want my own new rules?</h3>
+<p>JSHint covers most use cases, but it can&#39;t possibly cover them all out of the box. So another guy came along and added <strong>even more</strong> magic. Enter, <strong>ESLint</strong>.</p>
+<ul>
+<li>Like JSHint, but with a different source of magic</li>
+<li>This different magic lets us write out own rules easily</li>
+<li>Is completely style agnostic; have it your way</li>
+<li>Made primarily by Nicholas Zakas, who therefore also wrote a book: <strong>Professional JS for Web Devs</strong></li>
+</ul>
+<p>Recall: &quot;undesirable (whatever that means to you)&quot;.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><h3 id="how-do-i-install-eslint-">How do I install ESLint?</h3>
+<p>If we just want to configure and use ESLint, we can just:</p>
+<pre><code>npm install -g eslint</code></pre>
+<p>But to write our own rules, we&#39;ll need to:</p>
+<pre><code>git clone git://github.com/eslint/eslint.git
+cd eslint
+npm install
+npm test
+npm install -g yo
+npm install -g generator-eslint</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="okay-now-how-do-i-run-it-">Okay, now how do I run it?</h3>
+<p>First, you need to write a <code>.eslintrc</code>. We could read the docs and write our own, but I&#39;ve already done that, so let&#39;s take a look at it.</p>
+<p>Then we can run ESLint on an example file:</p>
+<pre><code>eslint examples/horrible.js</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><p>&nbsp;</p>
+<p>Look at all of those bad practices that it caught!</p>
+<p>Let&#39;s try to fix them.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
+    <section class="slide-content"><h3 id="cool-now-how-do-we-make-a-rule-">Cool, now how do we make a rule?</h3>
+<p>First, let&#39;s look at some rules that ESLint provides. Namely, <code>no-space-before-semi</code> and <code>func-style</code>.</p>
+<p>Nothing crazy yet; let&#39;s make a rule. Normally we&#39;d go:</p>
+<pre><code>yo eslint:rule</code></pre>
+<p>but for this talk&#39;s environment, we&#39;ll just copy <code>rules/template.js</code> and start from there.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><h3 id="okay-what-info-is-available-to-the-rule-">Okay, what info is available to the rule?</h3>
+<p>The <code>context</code> has <code>report</code> and some source-level stuff:</p>
+<pre><code>var source = context.getSource(); // full source
+var nodeSource = context.getSource(node); // just this piece
+// three characters after this piece
+var justFollowingThree = context.getSource(node, 0, 3);
+// three characters before this piece
+var justPreviousThree = context.getSource(node, 3);</code></pre>
+<p>and each function receives a <code>node</code> argument when invoked, whose properties vary from type to type. Example: <code>Identifier</code> nodes will give us <code>node.name</code>.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h3 id="okay-let-s-run-our-rule-">Okay, let&#39;s run our rule!</h3>
+<p>Yep. I already made some config files to help out, so we&#39;ll just need to point ESLint at all the right places:</p>
+<pre><code>eslint --reset --eslintrc=false --rulesdir rules
+-c configs/curly-eslint.json examples/one.js</code></pre>
+<p>That will run just our one new rule against <code>one.js</code>. Then we can run it against <code>two.js</code> and <code>three.js</code> and even <code>horrible.js</code>, if we&#39;re so inclined.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h3 id="okay-let-s-make-another-rule-">Okay, let&#39;s make another rule.</h3>
+<p>Sure. Let&#39;s take a more generous interpretation of</p>
+<blockquote>
+<p>&quot;undesirable (whatever that means to you)&quot;</p>
+</blockquote>
+<p>this time. We&#39;ll call our rule <code>four.js</code>.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h3 id="cool-now-let-s-try-that-out-">Cool, now let&#39;s try that out!</h3>
+<p>Of course. Let&#39;s make sure none of these pesky variable names are too long for our taste. Run:</p>
+<pre><code>eslint --reset --eslintrc=false --rulesdir rules
+-c configs/four-eslint.json examples/one.js</code></pre>
+<p>and then on <code>two.js</code> and <code>three.js</code> and <code>horrible.js</code> if we want.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="let-s-test-them-together-">Let&#39;s test them together!</h3>
+<p>You bet:</p>
+<pre><code>eslint --reset --eslintrc=false --rulesdir rules
+-c configs/both-eslint.json examples/one.js</code></pre>
+<p>and then on <code>two.js</code> and <code>three.js</code>, of course.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><h3 id="so-what-s-so-hard-about-these-rules-">So what&#39;s so hard about these rules?</h3>
+<p>Well, as you saw, sometimes simple things aren&#39;t quite so simple. Enforcing some rules is harder than enforcing others. Let&#39;s look at:</p>
+<ul>
+<li><code>camelcase</code></li>
+<li><code>yoda</code></li>
+<li><code>block-scoped-var</code></li>
+</ul>
+<p>The ones we looked at before were all easy cases. These, not so much. Some of these ESLint rules are doing quite a bit of magic of their own.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><h3 id="but-what-is-all-that-magic-">But what IS all that magic?</h3>
+<p>In this talk, I&#39;ve used the word <strong>Magic</strong>, roughly, as a replacement for <strong>static code analysis</strong>.</p>
+<p>ESLint has some of its own magic contained in its rules, generally more complex than the ones we just wrote.</p>
+<p>It&#39;s built on the magic powers of <strong>Esprima</strong>, a parser which turns JS into <strong>Abstract Syntax Trees</strong> according to the subject of Michael&#39;s talk, the <strong>SpiderMonkey Parser API</strong>.</p>
+<p>Esprima was made by Shape&#39;s own Ariya Hidayat.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
+    <section class="slide-content"><p>&nbsp;</p>
+<p>Surprisingly, Ariya has not written any JavaScript books.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>He did make <strong>PhantomJS</strong>, though.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><h3 id="takeaways">Takeaways</h3>
+<ul>
+<li>Most, but not all, makers of magic tools write books</li>
+<li>You should use their magic to make your code better</li>
+<li>You, too, can harness this magic, thanks to ESLint</li>
+<li>ESLint can be run as a task by Grunt, Gulp, etc, or as a pre-commit hook to enforce codebase consistency</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-21">
+    <section class="slide-content"><h3 id="wait-how-did-you-make-this-presentation-">Wait! How did you make this presentation?</h3>
+<p><strong>Cleaver</strong>, a nice JS tool which turns a simple Markdown file of your talk into a single HTML file of your slides.</p>
+<p><a href="https://github.com/jdan/cleaver">https://github.com/jdan/cleaver</a></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-22">
+    <section class="slide-content"><h3 id="when-will-the-slides-code-etc-be-online-">When will the slides/code/etc be online?</h3>
+<p>They&#39;re already available on my GitHub:
+<a href="http://github.com/LewisJEllis/eslint101">http://github.com/LewisJEllis/eslint101</a></p>
+<p>Other relevant links:</p>
+<ul>
+<li><a href="http://eslint.org/">ESLint</a></li>
+<li><a href="http://www.jshint.com/">JSHint</a></li>
+<li><a href="http://www.jslint.com/">JSLint</a></li>
+<li><a href="http://esprima.org/">Esprima</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API">SpiderMonkey Parser API</a></li>
+<li><a href="https://github.com/rwaldron/idiomatic.js/">idiomatic.js</a></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-23">
+    <section class="slide-content"><div class="author">
+  <h1 class="name">Lewis Ellis</h1>
+    <h3 class="twitter">
+      <a href="http://twitter.com/@LewisJEllis">@LewisJEllis</a>
+    </h3>
+    <h3 class="url">
+      <a href="http://LewisJEllis.com">http://LewisJEllis.com</a>
+    </h3>
+</div>
+</section>
+  </div>
+
+  <div class="controls">
+    <div class="arrow prev"></div>
+    <div class="arrow next"></div>
+  </div>
+
+
+  <script type="text/javascript">
+    /**
+ * Returns the current page number of the presentation.
+ */
+function currentPosition() {
+  return parseInt(document.querySelector('.slide:not(.hidden)').id.slice(6));
+}
+
+
+/**
+ * Navigates forward n pages
+ * If n is negative, we will navigate in reverse
+ */
+function navigate(n) {
+  var position = currentPosition();
+  var numSlides = document.getElementsByClassName('slide').length;
+
+  /* Positions are 1-indexed, so we need to add and subtract 1 */
+  var nextPosition = (position - 1 + n) % numSlides + 1;
+
+  /* Normalize nextPosition in-case of a negative modulo result */
+  nextPosition = (nextPosition - 1 + numSlides) % numSlides + 1;
+
+  document.getElementById('slide-' + position).classList.add('hidden');
+  document.getElementById('slide-' + nextPosition).classList.remove('hidden');
+
+  updateProgress();
+  updateURL();
+  updateTabIndex();
+}
+
+
+/**
+ * Updates the current URL to include a hashtag of the current page number.
+ */
+function updateURL() {
+  window.history.replaceState({} , null, '#' + currentPosition());
+}
+
+
+/**
+ * Sets the progress indicator.
+ */
+function updateProgress() {
+  var progressBar = document.querySelector('.progress-bar');
+
+  if (progressBar !== null) {
+    var numSlides = document.getElementsByClassName('slide').length;
+    var position = currentPosition() - 1;
+    var percent = (numSlides === 1) ? 100 : 100 * position / (numSlides - 1);
+    progressBar.style.width = percent.toString() + '%';
+  }
+}
+
+
+/**
+ * Removes tabindex property from all links on the current slide, sets
+ * tabindex = -1 for all links on other slides. Prevents slides from appearing
+ * out of control.
+ */
+function updateTabIndex() {
+  var allLinks = document.querySelectorAll('.slide a');
+  var position = currentPosition();
+  var currentPageLinks = document.getElementById('slide-' + position).querySelectorAll('a');
+  var i;
+
+  for (i = 0; i < allLinks.length; i++) {
+    allLinks[i].setAttribute('tabindex', -1);
+  }
+
+  for (i = 0; i < currentPageLinks.length; i++) {
+    currentPageLinks[i].removeAttribute('tabindex');
+  }
+}
+
+/**
+ * Determines whether or not we are currently in full screen mode
+ */
+function isFullScreen() {
+  return document.fullscreenElement ||
+         document.mozFullScreenElement ||
+         document.webkitFullscreenElement ||
+         document.msFullscreenElement;
+}
+
+/**
+ * Toggle fullScreen mode on document element.
+ * Works on chrome (>= 15), firefox (>= 9), ie (>= 11), opera(>= 12.1), safari (>= 5).
+ */
+function toggleFullScreen() {
+  /* Convenient renames */
+  var docElem = document.documentElement;
+  var doc = document;
+
+  docElem.requestFullscreen =
+      docElem.requestFullscreen ||
+      docElem.msRequestFullscreen ||
+      docElem.mozRequestFullScreen ||
+      docElem.webkitRequestFullscreen.bind(docElem, Element.ALLOW_KEYBOARD_INPUT);
+
+  doc.exitFullscreen =
+      doc.exitFullscreen ||
+      doc.msExitFullscreen ||
+      doc.mozCancelFullScreen ||
+      doc.webkitExitFullscreen;
+
+  isFullScreen() ? doc.exitFullscreen() : docElem.requestFullscreen();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Update the tabindex to prevent weird slide transitioning
+  updateTabIndex();
+
+  // If the location hash specifies a page number, go to it.
+  var page = window.location.hash.slice(1);
+  if (page) {
+    navigate(parseInt(page) - 1);
+  }
+
+  document.onkeydown = function (e) {
+    var kc = e.keyCode;
+
+    // left, down, H, J, backspace, PgUp - BACK
+    // up, right, K, L, space, PgDn - FORWARD
+    // enter - FULLSCREEN
+    if (kc === 37 || kc === 40 || kc === 8 || kc === 72 || kc === 74 || kc === 33) {
+      navigate(-1);
+    } else if (kc === 38 || kc === 39 || kc === 32 || kc === 75 || kc === 76 || kc === 34) {
+      navigate(1);
+    } else if (kc === 13) {
+      toggleFullScreen();
+    }
+  };
+
+  if (document.querySelector('.next') && document.querySelector('.prev')) {
+    document.querySelector('.next').onclick = function (e) {
+      e.preventDefault();
+      navigate(1);
+    };
+
+    document.querySelector('.prev').onclick = function (e) {
+      e.preventDefault();
+      navigate(-1);
+    };
+  }
+});
+
+
+  </script>
+</body>
+</html>
