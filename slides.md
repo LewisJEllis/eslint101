@@ -66,7 +66,7 @@ after he forked JSLint, added magic, and called it **JSHint**.
 JSHint covers most use cases, but it can't possibly cover them all out of the box. So another guy came along and added **even more** magic. Enter, **ESLint**.
 
 * Like JSHint, but with a different source of magic
-* This different magic lets us write out own rules easily
+* This different magic lets us write our own rules easily
 * Is completely style agnostic; have it your way
 * Made primarily by Nicholas Zakas, who therefore also wrote a book: **Professional JS for Web Devs**
 
